@@ -16,6 +16,7 @@ void push(Stack *s, int value);
 int pop(Stack *s);
 int peek(Stack *s);
 int top(Stack *s);
+void sortList(Stack *s);
 void display(Stack *s);
 
 int main()
@@ -26,6 +27,9 @@ int main()
     push(s, 3);
     display(s);
     printf("Popped: %d\n", pop(s));
+    display(s);
+    push(s, 3);
+    sortList(s);
     display(s);
     return 0;
 }
@@ -83,6 +87,22 @@ int peek(Stack *s)
 int top(Stack *s)
 {
     return s->top;
+}
+
+void sortList(Stack *s)
+{
+    for (int i = 0; i < s->top ; i++)
+    {
+        for (int j = 0; j < s->top - i; j++)
+        {
+            if (s->items[j] > s->items[j + 1])
+            {
+                int temp = s->items[j];
+                s->items[j] = s->items[j + 1];
+                s->items[j + 1] = temp;
+            }
+        }
+    }
 }
 
 void display(Stack *s)

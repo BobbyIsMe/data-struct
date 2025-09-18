@@ -18,6 +18,7 @@ void push(Stack *s, int value);
 int pop(Stack *s);
 int peek(Stack *s);
 int top(Stack *s);
+void sortList(Stack *s);
 void display(Stack *s);
 
 int main()
@@ -28,6 +29,9 @@ int main()
     push(s, 3);
     display(s);
     printf("Popped: %d\n", pop(s));
+    display(s);
+    push(s, 7);
+    sortList(s);
     display(s);
     return 0;
 }
@@ -80,6 +84,30 @@ int peek(Stack *s)
     }
 
     return s->top->data;
+}
+
+void sortList(Stack *s)
+{
+    Node *temp;
+    Node *end = NULL;
+    int swapped = 1;
+    while(swapped)
+    {
+        temp = s->top;
+        swapped = 0;
+        while(temp->next != NULL && temp->next != end)
+        {
+            if(temp->data > temp->next->data)
+            {
+                int c = temp->data;
+                temp->data = temp->next->data;
+                temp->next->data = c;
+                if(!swapped) swapped = 1;
+            }
+            temp = temp->next;
+        }
+        end = temp;
+    }
 }
 
 void display(Stack *s)

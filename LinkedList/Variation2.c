@@ -23,6 +23,7 @@ void deleteLast(List *list);
 void deletePos(List *list, int index);
 int retrieve(List *list, int index);
 int locate(List *list, int data);
+void sortList(List *list);
 void display(List *list);
 
 int main()
@@ -53,6 +54,9 @@ int main()
     display(list);
 
     deletePos(list, 1);
+    display(list);
+
+    sortList(list);
     display(list);
 
     printf("Retrieve result for index %d: %d\n\n", 1, retrieve(list, 1));
@@ -183,6 +187,32 @@ void insertPos(List *list, int data, int index)
 
     newNode->next = current->next;
     current->next = newNode;
+}
+
+void sortList(List *list)
+{
+    Node *temp = NULL;
+    Node *end = NULL;
+    int start = 1;
+    while(start)
+    {
+        start = 0;
+        temp = list->head;
+        while(temp->next != NULL && temp->next != end)
+        {
+            if(temp->data > temp->next->data)
+            {
+                int c = temp->data;
+                temp->data = temp->next->data;
+                temp->next->data = c;
+
+                if(!start)
+                start = 1;
+            }
+            temp = temp->next; 
+        }
+        end = temp;
+    }
 }
 
 void deleteStart(List *list)

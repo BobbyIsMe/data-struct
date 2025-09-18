@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define MAX 4
+#define MAX 6
 
 typedef struct
 {
@@ -16,6 +16,7 @@ bool isEmpty(Queue *q);
 void enqueue(Queue *q, int value);
 int dequeue(Queue *q);
 int front(Queue *q);
+void sort(Queue *q);
 void display(Queue *q);
 
 int main()
@@ -33,6 +34,10 @@ int main()
     enqueue(q, 3);
     enqueue(q, 4);
     enqueue(q, 5);
+    enqueue(q, 2);
+    enqueue(q, 7);
+    display(q);
+    sort(q);
     display(q);
     return 0;
 }
@@ -87,6 +92,25 @@ int front(Queue *q)
     }
 
     return q->items[q->front];
+}
+
+void sort(Queue *q)
+{
+    int n = (q->rear - q->front + MAX + 1) % MAX;
+    for(int i = 0; i < n - 1; i++)
+    {
+        for(int j = 0; j < n - i - 1; j++)
+        {
+            int *arr1 = &q->items[(q->front + j) % MAX];
+            int *arr2 = &q->items[(q->front + j + 1) % MAX];
+            if(*arr1 > *arr2)
+            {
+                int t = *arr1;
+                *arr1 = *arr2;
+                *arr2 = t;
+            }
+        }
+    }
 }
 
 void display(Queue *q)
