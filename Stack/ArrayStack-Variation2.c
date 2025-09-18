@@ -33,18 +33,18 @@ int main()
 Stack *initialize()
 {
     Stack *s = (Stack *)malloc(sizeof(Stack));
-    s->top = -1;
+    s->top = MAX;
     return s;
 }
 
 bool isFull(Stack *s)
 {
-    return s->top == MAX - 1;
+    return s->top == -1;
 }
 
 bool isEmpty(Stack *s)
 {
-    return s->top == -1;
+    return s->top == MAX - 1;
 }
 
 void push(Stack *s, int value)
@@ -54,7 +54,7 @@ void push(Stack *s, int value)
         return;
     }
 
-    s->top++;
+    s->top--;
     s->items[s->top] = value;
 }
 
@@ -66,7 +66,7 @@ int pop(Stack *s)
     }
 
     int value = s->items[s->top];
-    s->top--;
+    s->top++;
     return value;
 }
 
@@ -94,7 +94,7 @@ void display(Stack *s)
         return;
     }
 
-    for (int i = s->top; i >= 0; i--)
+    for (int i = s->top; i < MAX; i++)
     {
         printf("%d ", s->items[i]);
     }

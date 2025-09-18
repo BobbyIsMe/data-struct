@@ -94,10 +94,9 @@ int locate(List L, int data)
 List insertSorted(List L, int data)
 {
     int i;
-    for (i = 0; i < L.count; i++)
+    for (; i < L.count && L.elemPtr[i] < data; i++)
     {
-        if (L.elemPtr[i] > data)
-            return insertPos(L, data, i);
+
     }
     return insertPos(L, data, i);
 }

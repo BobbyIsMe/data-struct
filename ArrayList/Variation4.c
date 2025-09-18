@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #define LENGTH 4
 
-typedef struct {
+typedef struct
+{
     int *elemPtr;
     int count;
     int max;
@@ -39,7 +40,7 @@ int main()
 
 void initialize(EPtr *L)
 {
-    *L = (EPtr) malloc(sizeof(Etype));
+    *L = (EPtr)malloc(sizeof(Etype));
     (*L)->elemPtr = malloc(sizeof(int) * LENGTH);
     (*L)->max = LENGTH;
     (*L)->count = 0;
@@ -52,7 +53,7 @@ void insertPos(EPtr L, int data, int position)
         return;
     }
 
-    if(L->count == L->max)
+    if (L->count == L->max)
     {
         L->max *= 2;
         L->elemPtr = realloc(L->elemPtr, sizeof(int) * L->max);
@@ -94,12 +95,11 @@ int locate(EPtr L, int data)
 void insertSorted(EPtr L, int data)
 {
     int i = 0;
-    for (; i < L->count; i++)
+    for (; i < L->count && L->elemPtr[i] < data; i++)
     {
-        if (L->elemPtr[i] > data)
-            return insertPos(L, data, i);
+
     }
-    return insertPos(L, data, i);
+    insertPos(L, data, i);
 }
 
 int retrieve(EPtr L, int position)
@@ -111,7 +111,6 @@ int retrieve(EPtr L, int position)
 
     return L->elemPtr[position];
 }
-
 
 void display(EPtr L)
 {

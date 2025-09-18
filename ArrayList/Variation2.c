@@ -95,12 +95,11 @@ int retrieve(EPtr L, int position)
 void insertSorted(EPtr L, int data)
 {
     int i;
-    for (i = 0; i < L->count; i++)
+    for (; i < L->count && L->elem[i] < data; i++)
     {
-        if (L->elem[i] > data)
-            return insertPos(L, data, i);
+
     }
-    return insertPos(L, data, i);
+    insertPos(L, data, i);
 }
 
 void display(EPtr L)
