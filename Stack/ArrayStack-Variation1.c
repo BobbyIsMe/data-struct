@@ -122,19 +122,19 @@ void sortList(Stack *s)
     }
 }
 
-void display(Stack *q)
+void display(Stack *s)
 {
     printf("Stack: ");
-    if (isEmpty(q))
+    if (isEmpty(s))
     {
         printf("Stack is empty.\n");
         return;
     }
-    Stack copy = *q;
-    while (!isEmpty(q))
+    Stack copy = *s;
+    while (!isEmpty(s))
     {
-        printf("%d ", pop(q));
+        printf("%d ", pop(s));
     }
-    *q = copy;
+    *s = copy;
     printf("\n");
 }
