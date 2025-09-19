@@ -76,6 +76,7 @@ void deletePos(EPtr L, int position)
 
     L->elemPtr[position] = 0;
     L->count--;
+
     for (int i = position; i < L->count; i++)
     {
         L->elemPtr[i] = L->elemPtr[i + 1];

@@ -113,11 +113,25 @@ void display(Queue *q)
         return;
     }
 
-    Node *temp = q->front;
-    while (temp != NULL)
+    // Node *temp = q->front;
+    // while (temp != NULL)
+    // {
+    //     printf("%d -> ", temp->data);
+    //     temp = temp->next;
+    // }
+
+    Queue *temp = initialize();
+    while(!isEmpty(q))
     {
-        printf("%d -> ", temp->data);
-        temp = temp->next;
+        enqueue(temp, dequeue(q));
     }
+    
+    while(!isEmpty(temp))
+    {
+        int val = dequeue(temp);
+        printf("%d -> ", val);
+        enqueue(q, val);
+    }
+
     printf("NULL\n");
 }

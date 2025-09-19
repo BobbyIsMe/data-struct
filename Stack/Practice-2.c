@@ -13,26 +13,50 @@ Stack *initialize();
 bool isFull(Stack *s);
 bool isEmpty(Stack *s);
 void push(Stack *s, int value);
+void pushSorted(Stack *s, int value);
 int pop(Stack *s);
 int peek(Stack *s);
 int top(Stack *s);
 void sortList(Stack *s);
-void sortStack(Stack *s);
 void display(Stack *s);
 
 int main()
 {
     Stack *s = initialize();
-    push(s, 5);
-    push(s, 4);
-    push(s, 3);
-    display(s);
-    printf("Popped: %d\n", pop(s));
-    display(s);
-    push(s, 3);
-    sortStack(s);
+    pushSorted(s, 2);
+    pushSorted(s, 5);
+    pushSorted(s, 4);
+    pushSorted(s, 3);
+    pushSorted(s, 6);
+    // display(s);
+    // printf("Popped: %d\n", pop(s));
+    // display(s);
+    // push(s, 3);
+    // sortList(s);
     display(s);
     return 0;
+}
+
+void pushSorted(Stack *s, int value)
+{
+    Stack *temp = initialize();
+
+    while(!isEmpty(s) && peek(s) <= value)
+    {
+        push(temp, pop(s));
+    }
+
+    push(temp, value);
+
+    while(!isEmpty(s))
+    {
+        push(temp, pop(s));
+    }
+
+    while(!isEmpty(temp))
+    {
+        push(s, pop(temp));
+    }
 }
 
 Stack *initialize()
@@ -61,22 +85,6 @@ void push(Stack *s, int value)
 
     s->top++;
     s->items[s->top] = value;
-}
-
-void sortStack(Stack *s) {
-    Stack *temp = initialize();
-    while (!isEmpty(s)) {
-        int curr = pop(s);
-        // Move larger elements back to the original stack
-        while (!isEmpty(temp) && peek(temp) < curr) {
-            push(s, pop(temp));
-        }
-        push(temp, curr);
-    }
-    // Transfer sorted elements back to original stack
-    while (!isEmpty(temp)) {
-        push(s, pop(temp));
-    }
 }
 
 int pop(Stack *s)
@@ -122,19 +130,18 @@ void sortList(Stack *s)
     }
 }
 
-void display(Stack *q)
+void display(Stack *s)
 {
     printf("Stack: ");
-    if (isEmpty(q))
+    if (isEmpty(s))
     {
         printf("Stack is empty.\n");
         return;
     }
-    Stack copy = *q;
-    while (!isEmpty(q))
+
+    for (int i = s->top; i >= 0; i--)
     {
-        printf("%d ", pop(q));
+        printf("%d ", s->items[i]);
     }
-    *q = copy;
     printf("\n");
 }

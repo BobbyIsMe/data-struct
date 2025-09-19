@@ -22,30 +22,58 @@ bool isEmpty(Queue *q);
 void enqueue(Queue *q, int value);
 int dequeue(Queue *q);
 int front(Queue *q);
+void enqueueSorted(Queue *s, int value);
 void sort(Queue *q);
 void display(Queue *q);
 
 int main()
 {
     Queue *q = initialize();
-    enqueue(q, 5);
-    enqueue(q, 4);
-    enqueue(q, 3);
+    enqueueSorted(q, 5);
+    enqueueSorted(q, 2);
+    enqueueSorted(q, 3);
+    enqueueSorted(q, 6);
     display(q);
-    printf("Dequeued: %d\n", dequeue(q));
-    display(q);
-    printf("Dequeued: %d\n", dequeue(q));
-    printf("Dequeued: %d\n", dequeue(q));
-    display(q);
-    enqueue(q, 3);
-    enqueue(q, 4);
-    enqueue(q, 5);
-    enqueue(q, 1);
-    enqueue(q, 7);
-    display(q);
-    sort(q);
-    display(q);
+    // enqueue(q, 5);
+    // enqueue(q, 4);
+    // enqueue(q, 3);
+    // display(q);
+    // printf("Dequeued: %d\n", dequeue(q));
+    // display(q);
+    // printf("Dequeued: %d\n", dequeue(q));
+    // printf("Dequeued: %d\n", dequeue(q));
+    // display(q);
+    // enqueue(q, 3);
+    // enqueue(q, 4);
+    // enqueue(q, 5);
+    // enqueue(q, 1);
+    // enqueue(q, 7);
+    // display(q);
+    // sort(q);
+    // display(q);
     return 0;
+}
+
+void enqueueSorted(Queue *s, int value)
+{
+    Queue *temp = initialize();
+
+    while (!isEmpty(s) && front(s) <= value)
+    {
+        enqueue(temp, dequeue(s));
+    }
+
+    enqueue(temp, value);
+
+    while (!isEmpty(s))
+    {
+        enqueue(temp, dequeue(s));
+    }
+
+    while (!isEmpty(temp))
+    {
+        enqueue(s, dequeue(temp));
+    }
 }
 
 Queue *initialize()
@@ -94,18 +122,15 @@ int dequeue(Queue *q)
         return -1;
     }
 
-    int value = q->list.items[q->front];
+    int value = front(q);
+    q->front = ((q->front + 1) % MAX);
 
-    if (q->list.count == 1)
+    q->list.count--;
+    if (isEmpty(q))
     {
         q->front = -1;
         q->rear = -1;
     }
-    else
-    {
-        q->front = ((q->front + 1) % MAX);
-    }
-    q->list.count--;
 
     return value;
 }
@@ -122,13 +147,13 @@ int front(Queue *q)
 
 void sort(Queue *q)
 {
-    for(int i = 0; i < q->list.count - 1; i++)
+    for (int i = 0; i < q->list.count - 1; i++)
     {
-        for(int j = 0; j < q->list.count - i - 1; j++)
+        for (int j = 0; j < q->list.count - i - 1; j++)
         {
             int *arr1 = &q->list.items[(q->front + j) % MAX];
             int *arr2 = &q->list.items[(q->front + j + 1) % MAX];
-            if(*arr1 > *arr2)
+            if (*arr1 > *arr2)
             {
                 int t = *arr1;
                 *arr1 = *arr2;
@@ -146,13 +171,11 @@ void display(Queue *q)
         printf("Queue is empty.\n");
         return;
     }
-    int i = q->front;
-    while (1)
+    Queue copy = *q;
+    while (!isEmpty(q))
     {
-        printf("%d ", q->list.items[i]);
-        if (i == q->rear)
-            break;
-        i = (i + 1) % MAX;
+        printf("%d ", dequeue(q));
     }
+    *q = copy;
     printf("\n");
 }

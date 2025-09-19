@@ -15,6 +15,7 @@ Stack* initialize();
 bool isFull(Stack *s);
 bool isEmpty(Stack *s);
 void push(Stack *s, int value);
+void pushSorted(Stack *s, int value);
 int pop(Stack *s);
 int peek(Stack *s);
 int top(Stack *s);
@@ -24,17 +25,42 @@ void display(Stack *s);
 int main()
 {
     Stack *s = initialize();
-    push(s, 5);
-    push(s, 4);
-    push(s, 3);
+    pushSorted(s, 2);
+    pushSorted(s, 5);
+    pushSorted(s, 4);
+    pushSorted(s, 3);
+    pushSorted(s, 6);
     display(s);
     printf("Popped: %d\n", pop(s));
     display(s);
-    push(s, 7);
-    sortList(s);
+    push(s, 3);
+    // sortList(s);
     display(s);
     return 0;
 }
+
+void pushSorted(Stack *s, int value)
+{
+    Stack *temp = initialize();
+
+    while(!isEmpty(s) && peek(s) <= value)
+    {
+        push(temp, pop(s));
+    }
+
+    push(temp, value);
+
+    while(!isEmpty(s))
+    {
+        push(temp, pop(s));
+    }
+
+    while(!isEmpty(temp))
+    {
+        push(s, pop(temp));
+    }
+}
+
 
 Stack *initialize()
 {
@@ -110,20 +136,24 @@ void sortList(Stack *s)
     }
 }
 
-void display(Stack *s)
-{
-    printf("Stack: ");
-    if(isEmpty(s))
-    {
+void display(Stack *s) {
+    if (isEmpty(s)) {
         printf("Stack is empty.\n");
         return;
     }
 
-    Node *temp = s->top;
-    while(temp != NULL)
-    {
-        printf("%d -> ", temp->data);
-        temp = temp->next;
+    Stack *temp = initialize();
+
+    // Pop elements to temp while printing
+    while (!isEmpty(s)) {
+        int val = pop(s);
+        printf("%d -> ", val);
+        push(temp, val);
     }
     printf("NULL\n");
+
+    // Restore original stack
+    while (!isEmpty(temp)) {
+        push(s, pop(temp));
+    }
 }
