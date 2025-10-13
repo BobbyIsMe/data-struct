@@ -20,6 +20,7 @@ int pop(Stack *s);
 int peek(Stack *s);
 int top(Stack *s);
 void sortList(Stack *s);
+void sort(Stack *s);
 void display(Stack *s);
 
 int main()
@@ -35,8 +36,29 @@ int main()
     display(s);
     push(s, 3);
     // sortList(s);
+    sort(s);
     display(s);
     return 0;
+}
+
+void sort(Stack *s)
+{
+    Stack *temp = initialize();
+    while(!isEmpty(s))
+    {
+        int val = pop(s);
+        while(!isEmpty(temp) && peek(temp) > val)
+        {
+            push(s, pop(temp));
+        }
+
+        push(temp, val);
+    }
+
+    while(!isEmpty(temp))
+    {
+        push(s, pop(temp));
+    }
 }
 
 void pushSorted(Stack *s, int value)

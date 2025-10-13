@@ -88,6 +88,7 @@ int dequeue(Queue *q)
 
     if (isEmpty(q))
     {
+        q->front = NULL;
         q->rear = NULL;
     }
 
