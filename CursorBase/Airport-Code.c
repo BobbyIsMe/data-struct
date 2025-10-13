@@ -123,13 +123,12 @@ void insertSorted(VHeap *V, char *code)
 
 void insert(VHeap *V, char *code)
 {
-    int index = hash(code);
-    int temp = index;   
+    int index = hash(code); 
     printf("%s: %d\n", code, index);
-    if(strcmp(V->H[temp].code, Empty) == 0)
+    if(strcmp(V->H[index].code, Empty) == 0)
     {
-        V->H[temp].next = -1;
-        strcpy(V->H[temp].code, code);
+        V->H[index].next = -1;
+        strcpy(V->H[index].code, code);
     }
     else {
         int newNode = allocSpace(V);
