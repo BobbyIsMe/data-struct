@@ -4,12 +4,14 @@
 #define Empty " "
 #define Delete -1
 
-typedef struct {
+typedef struct
+{
     char code[3];
     int next;
 } node;
 
-typedef struct {
+typedef struct
+{
     node H[MAX];
     int avail;
 } VHeap;
@@ -17,42 +19,47 @@ typedef struct {
 void initialize(VHeap *V);
 int allocSpace(VHeap *V);
 void insertSorted(VHeap *V, char *code);
+void insertUniqueSorted(VHeap *V, char *code);
 void insert(VHeap *V, char *code);
 void display(VHeap V);
 void deallocSpace(VHeap *V, int index);
 void delete(VHeap *V, char *code);
 int hash(char *code);
 
-int main() {
+int main()
+{
     VHeap V;
-    int L = -1;   // start with an empty list
+    int L = -1; // start with an empty list
 
     // Initialize virtual heap
     initialize(&V);
 
     // Insert elements
-    insertSorted(&V, "JFK");
-    insertSorted(&V, "LAX");
-    insertSorted(&V, "SFO");
-    insertSorted(&V, "CDG");
-    insertSorted(&V, "NRT");
-    insertSorted(&V, "ATL");
-    insertSorted(&V, "DXB");
-    insertSorted(&V, "PEK");
-    insertSorted(&V, "MIA");
-    insertSorted(&V, "LHR");
-    insertSorted(&V, "SYD");
-    insertSorted(&V, "ORD");
+    insertUniqueSorted(&V, "JFK");
+    insertUniqueSorted(&V, "LAX");
+    insertUniqueSorted(&V, "SFO");
+    insertUniqueSorted(&V, "CDG");
+    insertUniqueSorted(&V, "NRT");
+    insertUniqueSorted(&V, "ATL");
+    insertUniqueSorted(&V, "DXB");
+    insertUniqueSorted(&V, "PEK");
+    insertUniqueSorted(&V, "MIA");
+    insertUniqueSorted(&V, "LHR");
+    insertUniqueSorted(&V, "SYD");
+    insertUniqueSorted(&V, "ORD");
     display(V);
     delete(&V, "ATL");
     display(V);
-    insertSorted(&V, "ATL");
+    insertUniqueSorted(&V, "ATL");
     display(V);
     delete(&V, "SYD");
     display(V);
-    insertSorted(&V, "SYD");
-    display(V);    
-
+    insertUniqueSorted(&V, "SYD");
+    display(V);
+    insertUniqueSorted(&V, "SYD");
+    display(V);
+    delete(&V, "SYD");
+    delete(&V, "SYD");
     return 0;
 }
 
@@ -91,63 +98,157 @@ int allocSpace(VHeap *V)
 void insertSorted(VHeap *V, char *code)
 {
     int index = hash(code);
-    if(strcmp(V->H[index].code, Empty) == 0)
+    if (strcmp(V->H[index].code, code) == 0)
     {
-        V->H[index].next = -1;
         strcpy(V->H[index].code, code);
+        return;
+    }
+
+    int trav = index;
+    int prev = -1;
+
+    while (trav != -1 && strcmp(V->H[index].code, code) < 0)
+    {
+        prev = trav;
+        trav = V->H[trav].next;
+    }
+
+    int newNode = allocSpace(V);
+    if (newNode == -1)
+    {
+        return;
+    }
+
+    if (prev == -1)
+    {
+        strcpy(V->H[newNode].code, V->H[trav].code);
+        V->H[newNode].next = V->H[trav].next;
+        strcpy(V->H[trav].code, code);
+        V->H[trav].next = newNode;
     } else {
-        int newNode = allocSpace(V);
-        if(newNode == -1)
+        strcpy(V->H[newNode].code, code);
+        V->H[newNode].next = trav;
+        V->H[prev].next = newNode;
+    }
+
+    // if (strcmp(V->H[index].code, Empty) == 0)
+    // {
+    //     V->H[index].next = -1;
+    //     strcpy(V->H[index].code, code);
+    // }
+    // else
+    // {
+    //     int newNode = allocSpace(V);
+    //     if (newNode == -1)
+    //     {
+    //         return;
+    //     }
+    //     if (strcmp(V->H[index].code, code) > 0) // First index
+    //     {
+    //         strcpy(V->H[newNode].code, V->H[index].code);
+    //         V->H[newNode].next = V->H[index].next;
+    //         strcpy(V->H[index].code, code);
+    //         V->H[index].next = newNode;
+    //     }
+    //     else
+    //     {                                                             // Second and above index
+    //         int *trav = &V->H[index].next;                            // Get next of first index
+    //         while (*trav != -1 && strcmp(V->H[*trav].code, code) < 0) // Traverse to the node before the next node
+    //         {
+    //             trav = &V->H[*trav].next;
+    //         }
+
+    //         strcpy(V->H[newNode].code, code);
+    //         V->H[newNode].next = *trav;
+    //         *trav = newNode;
+    //     }
+    // }
+}
+
+void insertUniqueSorted(VHeap *V, char *code)
+{
+    int index = hash(code);
+    int trav = index;
+    int prev = -1;
+
+    if (strcmp(V->H[trav].code, Empty) == 0)
+    {
+        strcpy(V->H[trav].code, code);
+        printf("[INSERT] Code %s inserted at index %d\n", code, index);
+        return;
+    }
+
+    while (trav != -1)
+    {
+        int cmp = strcmp(V->H[trav].code, code);
+
+        if (cmp == 0)
         {
+            printf("[INSERT] Code %s already exists!\n", code);
             return;
         }
-        if(strcmp(V->H[index].code, code) > 0) //First index
-        {
-            strcpy(V->H[newNode].code, V->H[index].code);
-            V->H[newNode].next = V->H[index].next;
-            strcpy(V->H[index].code, code);
-            V->H[index].next = newNode;
-        } else { //Second and above index
-            int *trav = &V->H[index].next; //Get next of first index
-            while(*trav != -1 && strcmp(V->H[*trav].code, code) < 0) //Traverse to the node before the next node
-            {
-                trav = &V->H[*trav].next;
-            }
-            
-            strcpy(V->H[newNode].code, code);
-            V->H[newNode].next = *trav;
-            *trav = newNode;
-        }
+        if (cmp > 0)
+            break;
+
+        prev = trav;
+        trav = V->H[trav].next;
     }
+
+    int newNode = allocSpace(V);
+    if (newNode == -1)
+    {
+        printf("[INSERT] No available space!\n");
+        return;
+    }
+    V->H[newNode].next = -1;
+
+    if (prev == -1)
+    {
+        strcpy(V->H[newNode].code, V->H[index].code);
+        V->H[newNode].next = V->H[index].next;
+
+        strcpy(V->H[index].code, code);
+        V->H[index].next = newNode;
+    }
+    else
+    {
+        strcpy(V->H[newNode].code, code);
+        V->H[newNode].next = trav;
+        V->H[prev].next = newNode;
+    }
+
+    printf("[INSERT] Collision: Code %s inserted in sorted order at index %d.\n", code, index);
 }
 
 void insert(VHeap *V, char *code)
 {
-    int index = hash(code); 
+    int index = hash(code);
     printf("%s: %d\n", code, index);
-    if(strcmp(V->H[index].code, Empty) == 0)
+    if (strcmp(V->H[index].code, Empty) == 0)
     {
         V->H[index].next = -1;
         strcpy(V->H[index].code, code);
     }
-    else {
-        int newNode = allocSpace(V);
-    if (newNode == -1)
+    else
     {
-        printf("Insertion failed: no space available.\n");
-        return;
-    }
-    
-    strcpy(V->H[newNode].code, code);
-    V->H[newNode].next = -1;
+        int newNode = allocSpace(V);
+        if (newNode == -1)
+        {
+            printf("Insertion failed: no space available.\n");
+            return;
+        }
+
+        strcpy(V->H[newNode].code, code);
+        V->H[newNode].next = -1;
 
         int *trav = &index;
-    while (*trav != -1) {
-        trav = &V->H[*trav].next;
-    }
+        while (*trav != -1)
+        {
+            trav = &V->H[*trav].next;
+        }
 
-    *trav = newNode;
-}
+        *trav = newNode;
+    }
 }
 
 void deallocSpace(VHeap *V, int index)
@@ -159,52 +260,86 @@ void deallocSpace(VHeap *V, int index)
 void delete(VHeap *V, char *code)
 {
     int index = hash(code);
-    if(index == -1)
+    int trav = index;
+    int prev = -1;
+    while (trav != -1 && strcmp(V->H[trav].code, code) != 0)
     {
+        prev = trav;
+        trav = V->H[trav].next;
+    }
+
+    if (trav == -1 && strcmp(V->H[trav].code, code) != 0)
+    {
+        printf("Element not found!\n");
         return;
     }
-    
-    int next = V->H[index].next;
-    if(strcmp(V->H[index].code, code) == 0)
+
+    if (prev == -1)
     {
-        if(next != -1)
+        int next = V->H[trav].next;
+        if (next != -1)
         {
-        strcpy(V->H[index].code, V->H[next].code);
-        V->H[index].next = V->H[next].next;
-        deallocSpace(V, next);
-        } else {
-            strcpy(V->H[index].code, Empty);
+            strcpy(V->H[trav].code, V->H[next].code);
+            V->H[trav].next = V->H[next].next;
+            deallocSpace(V, next);
         }
-    } else {
-        int *trav = &V->H[index].next;
-        while(*trav != -1 && strcmp(V->H[*trav].code, code) != 0)
+        else
         {
-            trav = &V->H[*trav].next;
-        }
-        
-        int temp;
-        if(*trav != -1)
-        {
-            temp = *trav;
-            *trav = V->H[*trav].next;
-            deallocSpace(V, temp);
+            strcpy(V->H[trav].code, Empty);
         }
     }
+    else
+    {
+        V->H[prev].next = V->H[trav].next;
+        deallocSpace(V, trav);
+    }
+
+    // int next = V->H[index].next;
+    // if (strcmp(V->H[index].code, code) == 0)
+    // {
+    //     if (next != -1)
+    //     {
+    //         strcpy(V->H[index].code, V->H[next].code);
+    //         V->H[index].next = V->H[next].next;
+    //         deallocSpace(V, next);
+    //     }
+    //     else
+    //     {
+    //         strcpy(V->H[index].code, Empty);
+    //     }
+    // }
+    // else
+    // {
+    //     int *trav = &V->H[index].next;
+    //     while (*trav != -1 && strcmp(V->H[*trav].code, code) != 0)
+    //     {
+    //         trav = &V->H[*trav].next;
+    //     }
+
+    //     int temp;
+    //     if (*trav != -1)
+    //     {
+    //         temp = *trav;
+    //         *trav = V->H[*trav].next;
+    //         deallocSpace(V, temp);
+    //     }
+    // }
 }
 
-void display(VHeap V) {
+void display(VHeap V)
+{
     printf("List: \n");
-    for(int i = 0; i < (MAX) / 2; i++)
+    for (int i = 0; i < (MAX) / 2; i++)
     {
         printf("%d index: ", i);
         int index = i;
-        while(index != -1 && strcmp(V.H[index].code, Empty) != 0)
+        while (index != -1 && strcmp(V.H[index].code, Empty) != 0)
         {
             printf("%s (next: %d) -> ", V.H[index].code, V.H[index].next);
             index = V.H[index].next;
         }
         printf("NULL\n");
     }
-        printf("%d", V.avail);
+    printf("Available Index: %d", V.avail);
     printf("\n");
 }
