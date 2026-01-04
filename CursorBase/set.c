@@ -86,42 +86,27 @@ void deallocSpace(VHeap *V, int index)
 
 void insertUniqueSorted(VHeap *V, int *S, char *code)
 {
-    int trav = *S;
-    int prev = -1;
-    while (trav != -1)
+    int *trav = S;
+    while (*trav != -1)
     {
-        if (strcmp(V->H[trav].code, code) == 0)
+        if(strcmp(V->H[*trav].code, code) == 0)
         {
-            printf("The element already exists!\n");
+            printf("Element already exists!\n");
             return;
         }
-
-        if (strcmp(V->H[trav].code, code) > 0)
-        {
-            break;
-        }
-        prev = trav;
-        trav = V->H[trav].next;
+        if(strcmp(V->H[*trav].code, code) > 0)
+        break;
+        trav = &V->H[*trav].next;
     }
 
     int newNode = allocSpace(V);
-    if (newNode == -1)
+    if(newNode == -1)
     {
         return;
     }
     strcpy(V->H[newNode].code, code);
-    V->H[newNode].next = -1;
-
-    if (prev == -1)
-    {
-        V->H[newNode].next = trav;
-        *S = newNode;
-    }
-    else
-    {
-        V->H[newNode].next = trav;
-        V->H[prev].next = newNode;
-    }
+    V->H[newNode].next = *trav;
+    *trav = newNode;
 }
 
 void delete(VHeap *V, int *S, char *code)

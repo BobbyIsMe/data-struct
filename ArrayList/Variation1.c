@@ -27,6 +27,7 @@ int main()
     L = insertPos(L, 6, -1);
     display(L);
     L = insertSorted(L, 6);
+    L = insertSorted(L, 6);
     display(L);
     L = deletePos(L, 0);
     display(L);
@@ -88,9 +89,15 @@ int locate(List L, int data)
 List insertSorted(List L, int data)
 {
     int i;
-    for (; i < L.count && L.elem[i] < data; i++)
+    for (; i < L.count; i++)
     {
-
+        if(L.elem[i] == data)
+        {
+            printf("Element already exists!\n");
+            return;
+        }
+        if(L.elem[i] < data)
+        break;
     }
     return insertPos(L, data, i);
 }

@@ -123,7 +123,6 @@ void display(Queue *q)
 
     Queue *temp = initialize();
 
-    // Pop elements to temp while printing
     while (!isEmpty(q))
     {
         int val = dequeue(q);
@@ -132,7 +131,6 @@ void display(Queue *q)
     }
     printf("NULL\n");
 
-    // Restore original stack
     while (!isEmpty(temp))
     {
         enqueue(q, dequeue(temp));
